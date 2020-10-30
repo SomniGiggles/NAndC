@@ -21,7 +21,7 @@ public class MainTest extends TestCase {
 
     @Test
     public void testInProgress1() {
-        main.runBoard("______XO__");
+        main.runBoard("_____XO__");
         assertEquals(Main.BoardState.IN_PROGRESS, main.getState());
     }
 
@@ -77,5 +77,41 @@ public class MainTest extends TestCase {
     public void testDraw() {
         main.runBoard("OOXXXOOXX");
         assertEquals(Main.BoardState.DRAW, main.getState());
+    }
+
+    @Test
+    public void testInputErrorLengthLong() {
+        main.runBoard("OOXXXOOXX_X");
+        assertEquals(Main.BoardState.INCORRECT_INPUT, main.getState());
+    }
+
+    @Test
+    public void testInputErrorLengthShort() {
+        main.runBoard("O___OOXX");
+        assertEquals(Main.BoardState.INCORRECT_INPUT, main.getState());
+    }
+
+    @Test
+    public void testInputErrorInputWrong1() {
+        main.runBoard("o_xxx_oox");
+        assertEquals(Main.BoardState.INCORRECT_INPUT, main.getState());
+    }
+
+    @Test
+    public void testInputErrorInputWrong2() {
+        main.runBoard("0_XXX_00X");
+        assertEquals(Main.BoardState.INCORRECT_INPUT, main.getState());
+    }
+
+    @Test
+    public void testInputErrorInputWrong3() {
+        main.runBoard("O-XXX-OOX");
+        assertEquals(Main.BoardState.INCORRECT_INPUT, main.getState());
+    }
+
+    @Test
+    public void testInputErrorInputWrong4() {
+        main.runBoard("X-OOO-XXO");
+        assertEquals(Main.BoardState.INCORRECT_INPUT, main.getState());
     }
 }

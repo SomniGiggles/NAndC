@@ -2,12 +2,60 @@ package noughtsandcrosses;
 
 import java.util.Arrays;
 
+/**
+ * @author Michael Harrison
+ */
 public class Main {
 
     private BoardState boardState;
 
     public enum BoardState {
-        NOUGHTS_WIN, CROSSES_WIN, DRAW, IN_PROGRESS, NOT_STARTED
+        NOUGHTS_WIN, CROSSES_WIN, DRAW, IN_PROGRESS, NOT_STARTED, INCORRECT_INPUT
+    }
+
+    /**
+     * Checks the input for two general input errors:
+     * 1: If the board length is not 9
+     * 2: If the inputs of the board are only a match of X's, O's and _'s.
+     * 3: If there are more O's than X's, as X should always go first.
+     * @param board - the N&C board in string format
+     * @return - bool true/false depending on whether it finds errors or not.
+     */
+    private static Boolean checkInput(String board) {
+
+        // Checks if length is 9, returns false if not
+        if (board.length() != 9) {
+            return false;
+        }
+
+        /*
+         * Returns false if board doesn't match regex. To return true it must be a mix of "X", "O" and "_".
+         * Case sensitive.
+         */
+        if (!board.matches("[XO_]+")) {
+            return false;
+        }
+
+        // Finally, checks if there are more O's than X's as this would be invalid due to X always going first.
+        String[] boardArray = board.split("");
+        int xCount = 0;
+        int oCount = 0;
+
+        // For each character in string, count if X or O
+        for (String boardChar : boardArray) {
+            if (boardChar.equals("X")) {
+                xCount++;
+            } else if (boardChar.equals("O")) {
+                oCount++;
+            }
+        }
+
+        if (oCount > xCount) {
+            return false;
+        }
+
+        // Return true if no checks fail
+        return true;
     }
 
     /**
@@ -59,14 +107,19 @@ public class Main {
      */
     private static BoardState getStateOfBoard(String board) {
 
-        // First check to see whether the board has started
-        if (board.equals("_________")) {
-            return BoardState.NOT_STARTED;
-        }
+        // First check to see whether the input is valid, then continue, else, return INCORRECT_INPUT
+        if (checkInput(board)) {
+            // Check to see whether the board has started
+            if (board.equals("_________")) {
+                return BoardState.NOT_STARTED;
+            }
 
-        // Split the string into an array, makes it easier to manipulate
-        String[] boardArray = board.split("");
-        return checkWinner(boardArray);
+            // Split the string into an array, makes it easier to manipulate
+            String[] boardArray = board.split("");
+            return checkWinner(boardArray);
+        } else {
+            return BoardState.INCORRECT_INPUT;
+        }
     }
 
     /**
